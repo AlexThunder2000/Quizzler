@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'quiz_brain.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 QuizBrain quizBrain = QuizBrain();
 
@@ -13,7 +14,7 @@ class Quizzler extends StatelessWidget {
         backgroundColor: Colors.grey.shade900,
         body: SafeArea(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: QuizPage(),
           ),
         ),
@@ -31,21 +32,28 @@ class _QuizPageState extends State<QuizPage> {
   bool correctAnswer = false, userAnswer = false;
   List<Widget> scoreKeeper = [];
 
-  void trueOrFalse(userAnswer, correctAnswer) {
+  void checkAnswer(userAnswer, correctAnswer) {
     if (userAnswer == correctAnswer) {
       scoreKeeper.add(
-        Icon(
+        const Icon(
           Icons.check,
           color: Colors.green,
         ),
       );
     } else {
       scoreKeeper.add(
-        Icon(
+        const Icon(
           Icons.dangerous_outlined,
           color: Colors.red,
         ),
       );
+    }
+
+    if (quizBrain.isThisLastQuestion()) {
+      quizBrain.restartGame(context);
+      scoreKeeper.clear();
+    } else {
+      quizBrain.nextQuestion();
     }
   }
 
@@ -58,12 +66,12 @@ class _QuizPageState extends State<QuizPage> {
         Expanded(
           flex: 10,
           child: Padding(
-            padding: EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(10.0),
             child: Center(
               child: Text(
                 quizBrain.getQuestionText(),
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 25.0,
                   color: Colors.white,
                 ),
@@ -74,10 +82,10 @@ class _QuizPageState extends State<QuizPage> {
         Expanded(
           flex: 2,
           child: Padding(
-            padding: EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(15.0),
             child: FlatButton(
               color: Colors.green,
-              child: Text(
+              child: const Text(
                 'True',
                 style: TextStyle(
                   color: Colors.white,
@@ -85,11 +93,8 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                correctAnswer = quizBrain.getQuestionAnswer();
-                userAnswer = true;
                 setState(() {
-                  quizBrain.nextQuestion();
-                  trueOrFalse(userAnswer, correctAnswer);
+                  checkAnswer(true, quizBrain.getQuestionAnswer());
                 });
               },
             ),
@@ -98,10 +103,10 @@ class _QuizPageState extends State<QuizPage> {
         Expanded(
           flex: 2,
           child: Padding(
-            padding: EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(15.0),
             child: FlatButton(
               color: Colors.red,
-              child: Text(
+              child: const Text(
                 'False',
                 style: TextStyle(
                   fontSize: 20.0,
@@ -109,11 +114,8 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                correctAnswer = quizBrain.getQuestionAnswer();
-                userAnswer = false;
                 setState(() {
-                  quizBrain.nextQuestion();
-                  trueOrFalse(userAnswer, correctAnswer);
+                  checkAnswer(false, quizBrain.getQuestionAnswer());
                 });
               },
             ),

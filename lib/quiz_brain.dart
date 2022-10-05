@@ -1,4 +1,5 @@
 import 'question.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class QuizBrain {
   int _questionNumber = 0;
@@ -39,11 +40,26 @@ class QuizBrain {
     return _questionBank[_questionNumber].questionAnswer;
   }
 
+  bool isThisLastQuestion() {
+    if (_questionNumber == _questionBank.length - 1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   void nextQuestion() {
     if (_questionNumber < _questionBank.length - 1) {
       _questionNumber++;
-    } else {
-      _questionNumber = 0;
     }
+  }
+
+  void restartGame(context) {
+    Alert(
+            context: context,
+            title: "Congratulations!",
+            desc: "This question was last")
+        .show();
+    _questionNumber = 0;
   }
 }
